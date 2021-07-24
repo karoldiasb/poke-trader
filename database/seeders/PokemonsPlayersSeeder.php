@@ -26,7 +26,12 @@ class PokemonsPlayersSeeder extends Seeder
             $i--;
         }
         $json = json_encode($arrayPokemons);
-        DB::table('pokemons_players')->insert(['player_id' => 1, 'jsonPokemons' => $json]);
+        DB::table('pokemons_players')->insert([
+            'player_id' => 1, 
+            'jsonPokemons' => $json,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now()
+        ]);
 
         $arrayPokemons = [];
         $i = 12;
@@ -36,6 +41,11 @@ class PokemonsPlayersSeeder extends Seeder
             $i--;
         }
         $json = json_encode($arrayPokemons);
-        DB::table('pokemons_players')->insert(['player_id' => 2, 'jsonPokemons' => $json]);
+        DB::table('pokemons_players')->insert([
+            'player_id' => 2, 
+            'jsonPokemons' => $json,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now()
+        ]);
     }
 }

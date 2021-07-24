@@ -2,34 +2,54 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Player;
 use Livewire\Component;
 
+use App\Models\Player;
 use App\Http\Controllers\PokeApiController;
 use App\Models\PokemonsPlayer;
 
-class Calculator extends Component
+class PokeTrader extends Component
 {
-    public $arrayPlayers = [];
-    public $inputPlayer1 = [];
-    public $inputPlayer2 = [];
-    public $arrayToChangePlayer1 = [];
-    public $arrayToChangePlayer2 = [];
-    public $isShowResult = false;
-    public $successWarning = "";
-    public $msgChange = "";
-    public $newArrayPlayer1 = [];
-    public $newArrayPlayer2 = [];
-    public $isChangeFair = false;
-    public $arrayHistoryPlayers = [];
+    public $arrayPlayers;
+    public $inputPlayer1;
+    public $inputPlayer2;
+    public $arrayToChangePlayer1;
+    public $arrayToChangePlayer2;
+    public $isShowResult;
+    public $successWarning;
+    public $msgChange;
+    public $newArrayPlayer1;
+    public $newArrayPlayer2;
+    public $isChangeFair;
+    public $arrayHistoryPlayers;
+    public $isLoading;
+
+    public function render()
+    {
+        return view('livewire.poke-trader');
+    }
 
     public function mount()
     {
+        $this->arrayPlayers = [];
+        $this->inputPlayer1 = [];
+        $this->inputPlayer2 = [];
+        $this->arrayToChangePlayer1 = [];
+        $this->arrayToChangePlayer2 = [];
+        $this->isShowResult = false;
+        $this->successWarning = "";
+        $this->msgChange = "";
+        $this->newArrayPlayer1 = [];
+        $this->newArrayPlayer2 = [];
+        $this->isChangeFair = false;
+        $this->arrayHistoryPlayers = [];
+        $this->isLoading = false;
+
         $players = Player::with(['latestPokemonsPlayer'])->get();
         $arrayPlayers = json_decode($players);
         $this->arrayPlayers = $this->getPokemonsWithBaseExperience($arrayPlayers);
 
-        $historyPlayers = PokemonsPlayer::with(['player'])->get();
+        $historyPlayers = PokemonsPlayer::with(['player'])->orderBy('id','DESC')->get();
         $arrayHistoryPlayers = json_decode($historyPlayers);
         foreach($arrayHistoryPlayers as $historyPlayers){
             $this->arrayHistoryPlayers[] = [
@@ -38,11 +58,6 @@ class Calculator extends Component
                 'date' => $historyPlayers->created_at
             ];
         }
-    }
-
-    public function render()
-    {
-        return view('livewire.calculator');
     }
 
     private function getPokemonsWithBaseExperience($players)
@@ -78,9 +93,6 @@ class Calculator extends Component
 
     public function calculate()
     {
-        // dd($this->arrayToChangePlayer1);
-        $this->isShowResult = false;
-
         $pokeApi = new PokeApiController;
 
         $totalBaseExperiencePlayer1 = 0;        
@@ -95,7 +107,6 @@ class Calculator extends Component
             $totalBaseExperiencePlayer2 += $pokemon->base_experience;
         }
 
-        $this->isShowResult = true;
         if(abs($totalBaseExperiencePlayer1 - $totalBaseExperiencePlayer2) > 20){
             $this->isChangeFair = false;
             $this->successWarning = "warning";
@@ -130,6 +141,8 @@ class Calculator extends Component
         
         $player2 = array_merge($this->newArrayPlayer2, $this->arrayToChangePlayer1);
         $this->insertPokemonsPlayer(2, json_encode($player2));
+
+        $this->mount();
     }
 
     public function insertPokemonsPlayer($id, $json)
@@ -140,5 +153,4 @@ class Calculator extends Component
 
         $pokemonplayer->save();
     }
-
 }

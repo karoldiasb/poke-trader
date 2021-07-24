@@ -1,5 +1,10 @@
 <div>
     <div class="container">
+        <!-- @if ($isLoading)
+            <div class="row d-flex justify-content-center">
+                <i class="fas fa-spinner fa-spin fa-5x"></i>
+            </div>
+        @endif -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             @foreach ($arrayPlayers as $player)
                     <div class="card" style="width: 18rem; margin-top: 10px; margin-right: 10px">
@@ -21,26 +26,6 @@
                                 </div>
                                 
                             @endforeach
-                            
-
-                            {{-- {{$player->latestPokemonsPlayer}} --}}
-                            
-                            {{-- @foreach ($player->pokemonsplayer as $pokemon)
-                                @foreach(json_decode($pokemon->jsonPokemons) as $p)
-                                    <div class="form-check">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="checkbox"  
-                                            name="inputPlayer{{$player->id}}"
-                                            wire:model.defer="inputPlayer{{$player->id}}",
-                                            value="{{$p}}"
-                                        >
-                                        <label class="form-check-label">
-                                            {{$p}}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            @endforeach --}}
                         </div>
                         <div class="card-body">
                             <button 
@@ -90,25 +75,34 @@
         <table class="table" style="margin-top: 20px">
             <thead>
               <tr>
-                <th scope="col">Player</th>
+                <th scope="col">Jogador</th>
+                <th scope="col" colspan="3">Pokemons</th>
                 <th scope="col">Data da Troca</th>
-                <th scope="col">Pokemons</th>
               </tr>
             </thead>
             <tbody>
                 @foreach ($arrayHistoryPlayers as $historyPlayer)
                     <tr>
                         <td>{{$historyPlayer['player']}}</td>
-                        <td>{{$historyPlayer['date']}}</td>
-                        <td>
+                        <td colspan="3">
                             @foreach ($historyPlayer['pokemons'] as $pokemon)
                                 <span class="badge bg-secondary text-white">{{$pokemon}}</span>
                             @endforeach                            
                         </td>
+                        <td>{{$historyPlayer['date']}}</td>
                     </tr>
                 @endforeach
             </tbody>
           </table>
     </div>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            @this.mount();
+            @this.render();
+        })
+    </script> -->
     
 </div>
+
+
