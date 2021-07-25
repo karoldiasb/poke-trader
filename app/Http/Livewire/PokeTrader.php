@@ -141,7 +141,7 @@ class PokeTrader extends Component
 
     private function isValidQuantity()
     {
-        if(count($this->arrayToChangePlayer1) > 6 or count($this->$this->arrayToChangePlayer2) > 6){
+        if(count($this->arrayToChangePlayer1) > 6 or count($this->arrayToChangePlayer2) > 6){
             $this->isChangeFair = false;
             $this->successWarning = "danger";
             $this->msgChange = "Error! O máximo de pokemons que podem ser selecionados para troca é 6!";
