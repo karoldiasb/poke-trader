@@ -45,10 +45,19 @@ class PokeTrader extends Component
         $this->arrayHistoryPlayers = [];
         $this->isLoading = false;
 
+        $this->getArrayPlayers();
+        $this->getArrayHistoryPlayers();
+    }
+
+    private function getArrayPlayers()
+    {
         $players = Player::with(['latestPokemonsPlayer'])->get();
         $arrayPlayers = json_decode($players);
         $this->arrayPlayers = $this->getPokemonsWithBaseExperience($arrayPlayers);
+    }
 
+    private function getArrayHistoryPlayers()
+    {
         $historyPlayers = PokemonsPlayer::with(['player'])->orderBy('id','DESC')->get();
         $arrayHistoryPlayers = json_decode($historyPlayers);
         foreach($arrayHistoryPlayers as $historyPlayers){
@@ -93,6 +102,16 @@ class PokeTrader extends Component
 
     public function calculate()
     {
+        $this->isShowResult = true;
+
+        if(!$this->isValidQuantity()){
+            return;
+        }
+
+        if(!$this->isValidCalculate()){
+            return;
+        }
+
         $pokeApi = new PokeApiController;
 
         $totalBaseExperiencePlayer1 = 0;        
@@ -118,6 +137,28 @@ class PokeTrader extends Component
         $this->successWarning = "success";
         $this->msgChange = "Yes! Troca justa. A diferença entre Jogador 1 ($totalBaseExperiencePlayer1) 
             e Jogador 2 ($totalBaseExperiencePlayer2) é menor que 20.";
+    }
+
+    private function isValidQuantity()
+    {
+        if(count($this->arrayToChangePlayer1) > 6 or count($this->$this->arrayToChangePlayer2) > 6){
+            $this->isChangeFair = false;
+            $this->successWarning = "danger";
+            $this->msgChange = "Error! O máximo de pokemons que podem ser selecionados para troca é 6!";
+            return false;
+        }
+        return true;
+    }
+
+    private function isValidCalculate()
+    {
+        if(empty($this->arrayToChangePlayer1) or empty($this->arrayToChangePlayer2)) {
+            $this->isChangeFair = false;
+            $this->successWarning = "danger";
+            $this->msgChange = "Error! É necessário selecionar pelo menos 1 pokemon de cada lado para calcular a troca!";
+            return false;
+        }
+        return true;
     }
 
     public function change()

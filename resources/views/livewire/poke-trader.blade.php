@@ -1,10 +1,11 @@
 <div>
     <div class="container">
-        <!-- @if ($isLoading)
-            <div class="row d-flex justify-content-center">
-                <i class="fas fa-spinner fa-spin fa-5x"></i>
+        <div class="row d-flex justify-content-center">
+            <div wire:loading>
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <b>Atualizando... </b>
             </div>
-        @endif -->
+        </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             @foreach ($arrayPlayers as $player)
                     <div class="card" style="width: 18rem; margin-top: 10px; margin-right: 10px">
@@ -54,6 +55,7 @@
                 <div class="card-body">
                     <button class="btn btn-primary" type="button" wire:click="calculate">Calcular</button>
                 </div>
+                
             </div>
         </div>
 
@@ -95,14 +97,6 @@
             </tbody>
           </table>
     </div>
-
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            @this.mount();
-            @this.render();
-        })
-    </script> -->
-    
 </div>
 
 
